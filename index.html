@@ -100,9 +100,10 @@
             <li>Chat web y bot de WhatsApp con las mismas capacidades</li>
             <li>Subida de PDFs y vectorización automática en PostgreSQL + pgvector</li>
             <li>Roles y permisos (RBAC): cada usuario consulta solo las bases a las que tiene acceso</li>
-            <li>Panel de administración, panel de supervisión, texto a voz y sugerencia de tickets de soporte</li>
+            <li>Multimodal: describe las imágenes de los PDFs y entiende fotos y notas de voz que llegan por WhatsApp</li>
+            <li>Panel de administración, panel de supervisión con resúmenes por IA, texto a voz y sugerencia de tickets de soporte</li>
           </ul>
-          <div class="stack"><span>PHP</span><span>Python</span><span>FastAPI</span><span>PostgreSQL</span><span>pgvector</span><span>Embeddings</span><span>WhatsApp API</span><span>TTS</span><span>JavaScript</span></div>
+          <div class="stack"><span>PHP</span><span>Python</span><span>FastAPI</span><span>PostgreSQL</span><span>pgvector</span><span>Gemini API</span><span>Embeddings</span><span>PyMuPDF</span><span>WhatsApp Cloud API</span><span>TTS</span><span>JavaScript</span></div>
         </div>
         <div class="pipe" aria-label="Flujo de una consulta">
           <div class="pipehead"><span class="eyebrow">Flujo de una consulta</span><button class="btn small" type="button" id="simbtn">▶ Simular consulta</button></div>
@@ -136,8 +137,12 @@
           <ul class="feat">
             <li>Tabla de tipos, climas que cambian la partida y jefes legendarios en arenas aparte</li>
             <li>Gacha con tickets, misiones diarias y semanales, logros y perfil</li>
-            <li>Enemigos con comportamiento propio: curan, ponen escudos o llaman a su manada</li>
+            <li>Enemigos con comportamiento propio: curan, ponen escudos o llaman a su manada, y rodean obstáculos con pathfinding</li>
+            <li>Cooperativo de hasta 4 jugadores por WebRTC, con amigos y ranking</li>
+            <li>Cuentas en la nube con Firebase: la partida se sigue en cualquier ordenador y se fusiona si jugaste sin conexión</li>
+            <li>Música y efectos sintetizados en directo con Web Audio, sin un solo fichero de audio</li>
           </ul>
+          <div class="stack"><span>JavaScript</span><span>Canvas 2D</span><span>Web Audio</span><span>WebRTC</span><span>Firebase</span><span>Firestore</span><span>Python</span><span>PokeAPI</span></div>
           <div class="actions">
             <a class="btn" href="https://jpter78.github.io/pokesurvivor/" target="_blank" rel="noopener">Jugar al juego ↗</a>
             <a class="btn ghost" href="https://github.com/JPTER78/pokesurvivor" target="_blank" rel="noopener">Ver código ↗</a>
@@ -219,26 +224,44 @@
       <p>Lo que uso en mis proyectos y lo que he aprendido trabajando.</p>
     </div>
     <div class="skills">
-      <div class="sk"><h3>Desarrollo</h3><ul>
-        <li>JavaScript, HTML y CSS<small>Webs y juegos en Canvas 2D sin frameworks</small></li>
-        <li>Python<small>APIs con FastAPI y scripts de datos</small></li>
-        <li>PHP<small>APIs REST y paneles de administración</small></li>
-        <li>Aplicaciones multiplataforma<small>Formación DAM</small></li>
+      <div class="sk"><h3>Frontend y juegos</h3><ul>
+        <li>JavaScript vanilla<small>Apps y juegos modulares sin frameworks</small></li>
+        <li>HTML y CSS<small>Responsive, tema claro/oscuro, accesibilidad y Tailwind</small></li>
+        <li>Canvas 2D<small>Render de sprites, partículas, cámara y HUD</small></li>
+        <li>Web Audio API<small>Sintetizador y secuenciador propios: música sin ficheros</small></li>
+        <li>IA de enemigos<small>Pathfinding con campos de distancia (BFS)</small></li>
       </ul></div>
-      <div class="sk"><h3>IA y datos</h3><ul>
-        <li>RAG y embeddings<small>Búsqueda semántica con fuentes</small></li>
-        <li>PostgreSQL + pgvector<small>Diseño de bases de datos y vectorización</small></li>
-        <li>Procesado de PDFs<small>Extracción y troceado para IA</small></li>
+      <div class="sk"><h3>Backend y APIs</h3><ul>
+        <li>PHP<small>APIs REST con PDO, sesiones con token y bcrypt</small></li>
+        <li>Python + FastAPI<small>Webhooks con tareas en segundo plano (Uvicorn)</small></li>
+        <li>Integración de APIs<small>WhatsApp Cloud (Meta), Gemini, PokeAPI</small></li>
+        <li>Email transaccional<small>PHPMailer y SMTP</small></li>
+        <li>Seguridad y permisos<small>RBAC por roles hasta en la búsqueda vectorial</small></li>
+      </ul></div>
+      <div class="sk"><h3>IA y LLMs</h3><ul>
+        <li>RAG y embeddings<small>Troceado, embeddings en lote y búsqueda semántica</small></li>
+        <li>Google Gemini API<small>Generación con modelos de respaldo si uno falla</small></li>
+        <li>IA multimodal<small>Visión, transcripción de notas de voz y texto a voz</small></li>
+        <li>Salida estructurada<small>JSON para tickets de soporte y resúmenes</small></li>
         <li>Aprendizaje automático<small>Especialización en curso</small></li>
       </ul></div>
-      <div class="sk"><h3>Sistemas</h3><ul>
-        <li>Redes y microinformática<small>Formación SMX</small></li>
-        <li>Resolución de incidencias<small>Hardware y software</small></li>
-        <li>Software de administración<small>Nivel avanzado</small></li>
-        <li>Paquetes ofimáticos<small>Manejo completo</small></li>
+      <div class="sk"><h3>Datos y nube</h3><ul>
+        <li>PostgreSQL<small>Diseño de esquemas, JSONB e índices GIN</small></li>
+        <li>pgvector<small>Vectores de 768 dimensiones con índice HNSW</small></li>
+        <li>Firebase<small>Auth, Firestore, Realtime Database y reglas de seguridad</small></li>
+        <li>Procesado de PDFs<small>Texto e imágenes con PyMuPDF para IA</small></li>
+        <li>Scripts de datos en Python<small>Descarga y transformación de datasets y sprites</small></li>
+      </ul></div>
+      <div class="sk"><h3>Tiempo real y sistemas</h3><ul>
+        <li>WebRTC<small>Multijugador P2P de hasta 4, con relé si falla la conexión</small></li>
+        <li>Sincronización<small>Guardado en la nube con fusión de partidas sin conexión</small></li>
+        <li>Git, GitHub y GitHub Pages<small>Control de versiones y publicación</small></li>
+        <li>Redes y microinformática<small>Formación SMX, incidencias de hardware y software</small></li>
+        <li>Servidores<small>Apache/XAMPP, tareas cron y túneles HTTPS para webhooks</small></li>
       </ul></div>
       <div class="sk"><h3>Negocio y contenido</h3><ul>
         <li>Marketplaces y e-commerce<small>Publicación y optimización en Amazon</small></li>
+        <li>SEO<small>Webs con sitemap, blog y analizador SEO propio</small></li>
         <li>Redes sociales<small>Gestión integral</small></li>
         <li>Edición multimedia y diseño<small>Software de diseño avanzado</small></li>
         <li>YouTube y streaming<small>Creador de contenido</small></li>

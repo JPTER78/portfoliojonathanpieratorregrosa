@@ -169,7 +169,7 @@ section.block{padding-block:clamp(56px,9vw,104px) 0}
 .edu .pill{margin-top:8px;display:inline-block}
 
 /* skills */
-.skills{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.skills{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 20px}
 @media (max-width:960px){.skills{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:520px){.skills{grid-template-columns:1fr}}
 .sk h3{font:700 16px/1.2 var(--f-display);margin-bottom:14px;letter-spacing:-.01em}
