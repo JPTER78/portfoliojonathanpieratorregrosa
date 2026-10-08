@@ -9,7 +9,6 @@ Portfolio interactivo hecho a mano con HTML, CSS y JavaScript, sin frameworks ni
 - **Pregúntale a mi CV**: un buscador tipo RAG en miniatura que encuentra el fragmento del CV más parecido a tu pregunta y lo dibuja en un mapa de vectores.
 - **Terminal**: pulsa `/` y escribe `help`.
 - **Simulación de XatiChat**: recorre paso a paso cómo responde una consulta el asistente.
-- **Minidemo jugable** inspirada en PokéSurvivor.
 - Tema claro y oscuro, animaciones al hacer scroll y un easter egg con el código Konami.
 
 ## Estructura

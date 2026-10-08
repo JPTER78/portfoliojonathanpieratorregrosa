@@ -149,91 +149,6 @@ cb.addEventListener('click', () => {
   try { navigator.clipboard.writeText(mail).then(ok, fallback); } catch(e){ fallback(); }
 });
 
-/* ---------- mini bullet-heaven ---------- */
-const g = document.getElementById('game'), gx = g.getContext('2d'), over = document.getElementById('gover');
-let GW = 0, GH = 0, run = false, S;
-let best = 0; try { best = +localStorage.getItem('jpt-best') || 0; } catch(e){}
-document.getElementById('hbest').textContent = 'Récord ' + best;
-function gsize(){ const r = g.getBoundingClientRect(), d = devicePixelRatio || 1; GW = r.width; GH = r.height; g.width = GW*d; g.height = GH*d; gx.setTransform(d,0,0,d,0,0); }
-function reset(){ S = {p:{x:GW/2,y:GH/2,tx:GW/2,ty:GH/2}, en:[], bu:[], fx:[], hp:3, score:0, t:0, last:0, fire:0, spawn:0, inv:0, keys:{}}; }
-const ENC = ['#FF7A2E','#4CCBC2','#C77DFF','#FFD166'];
-function spawn(){
-  const side = Math.floor(Math.random()*4), m = 20;
-  const x = side === 0 ? -m : side === 1 ? GW + m : Math.random()*GW, y = side === 2 ? -m : side === 3 ? GH + m : Math.random()*GH;
-  const shiny = Math.random() < 1/40;
-  S.en.push({x, y, r: shiny ? 9 : 7 + Math.random()*4, v: (40 + Math.random()*30 + S.t*1.6) * (shiny ? 1.4 : 1), c: shiny ? '#FFFFFF' : ENC[Math.floor(Math.random()*4)], hp: shiny ? 3 : 1, shiny});
-}
-let paused = false;
-function step(now){
-  if(!run) return;
-  if(paused){ S.last = 0; requestAnimationFrame(step); return; }
-  const dt = Math.min(.05, (now - (S.last || now))/1000); S.last = now; S.t += dt;
-  const p = S.p, k = S.keys, sp = 190;
-  if(k.w||k.a||k.s||k.d){ p.tx = p.x + ((k.d?1:0)-(k.a?1:0))*sp*dt*4; p.ty = p.y + ((k.s?1:0)-(k.w?1:0))*sp*dt*4; }
-  const dx = p.tx - p.x, dy = p.ty - p.y, dd = Math.hypot(dx,dy);
-  if(dd > 1){ const mv = Math.min(dd, sp*dt*1.4); p.x += dx/dd*mv; p.y += dy/dd*mv; }
-  p.x = Math.max(10, Math.min(GW-10, p.x)); p.y = Math.max(10, Math.min(GH-10, p.y));
-  S.spawn -= dt; if(S.spawn <= 0){ spawn(); S.spawn = Math.max(.18, .9 - S.t*.02); }
-  S.fire -= dt;
-  if(S.fire <= 0 && S.en.length){
-    let tgt = null, bd = 1e9; for(const e of S.en){ const d = Math.hypot(e.x-p.x, e.y-p.y); if(d < bd){ bd = d; tgt = e; } }
-    const a = Math.atan2(tgt.y-p.y, tgt.x-p.x), spread = S.t > 20 ? [-.15,0,.15] : S.t > 8 ? [-.08,.08] : [0];
-    spread.forEach(o => S.bu.push({x:p.x, y:p.y, vx:Math.cos(a+o)*380, vy:Math.sin(a+o)*380, life:1.2}));
-    S.fire = .32;
-  }
-  for(const b of S.bu){ b.x += b.vx*dt; b.y += b.vy*dt; b.life -= dt; }
-  for(const e of S.en){ const a = Math.atan2(p.y-e.y, p.x-e.x); e.x += Math.cos(a)*e.v*dt; e.y += Math.sin(a)*e.v*dt; }
-  for(const b of S.bu) for(const e of S.en){ if(b.life > 0 && e.hp > 0 && Math.hypot(b.x-e.x, b.y-e.y) < e.r + 3){ b.life = 0; e.hp--; if(e.hp <= 0){ S.score += e.shiny ? 50 : 10; for(let i=0;i<8;i++) S.fx.push({x:e.x,y:e.y,vx:(Math.random()-.5)*160,vy:(Math.random()-.5)*160,life:.5,c:e.c}); } } }
-  S.inv -= dt;
-  for(const e of S.en){ if(e.hp > 0 && S.inv <= 0 && Math.hypot(e.x-p.x, e.y-p.y) < e.r + 8){ e.hp = 0; S.hp--; S.inv = 1; } }
-  S.en = S.en.filter(e => e.hp > 0); S.bu = S.bu.filter(b => b.life > 0 && b.x > -10 && b.x < GW+10 && b.y > -10 && b.y < GH+10);
-  for(const f of S.fx){ f.x += f.vx*dt; f.y += f.vy*dt; f.life -= dt; } S.fx = S.fx.filter(f => f.life > 0);
-  S.score += dt*2;
-  render();
-  const sc = Math.floor(S.score);
-  document.getElementById('hscore').textContent = 'Puntos ' + sc;
-  document.getElementById('hhp').textContent = 'Vida ' + '♥'.repeat(Math.max(0,S.hp)) + '♡'.repeat(3-Math.max(0,S.hp));
-  if(S.hp <= 0){
-    run = false;
-    if(sc > best){ best = sc; try { localStorage.setItem('jpt-best', best); } catch(e){} document.getElementById('hbest').textContent = 'Récord ' + best; }
-    over.hidden = false; over.querySelector('p').innerHTML = 'Fin de la partida: <b>' + sc + '</b> puntos.<br>El juego completo tiene 966 Pokémon y jefes legendarios.';
-    document.getElementById('gstart').textContent = 'Jugar otra vez';
-    return;
-  }
-  requestAnimationFrame(step);
-}
-function render(){
-  gx.fillStyle = '#141826'; gx.fillRect(0,0,GW,GH);
-  gx.strokeStyle = 'rgba(255,255,255,.04)'; gx.lineWidth = 1;
-  for(let x = 0; x < GW; x += 24){ gx.beginPath(); gx.moveTo(x,0); gx.lineTo(x,GH); gx.stroke(); }
-  for(let y = 0; y < GH; y += 24){ gx.beginPath(); gx.moveTo(0,y); gx.lineTo(GW,y); gx.stroke(); }
-  if(!S) return;
-  for(const f of S.fx){ gx.globalAlpha = f.life*2; gx.fillStyle = f.c; gx.fillRect(f.x-2,f.y-2,4,4); } gx.globalAlpha = 1;
-  for(const e of S.en){
-    gx.fillStyle = e.c; gx.beginPath(); gx.arc(e.x,e.y,e.r,0,7); gx.fill();
-    gx.fillStyle = '#141826'; gx.fillRect(e.x-3,e.y-2,2,2); gx.fillRect(e.x+1,e.y-2,2,2);
-    if(e.shiny){ gx.strokeStyle = '#FFD166'; gx.lineWidth = 2; gx.beginPath(); gx.arc(e.x,e.y,e.r+4+Math.sin(S.t*10)*2,0,7); gx.stroke(); }
-  }
-  gx.fillStyle = '#FFE8D6'; for(const b of S.bu){ gx.beginPath(); gx.arc(b.x,b.y,3,0,7); gx.fill(); }
-  const p = S.p;
-  if(S.inv <= 0 || Math.floor(S.t*12) % 2){
-    gx.fillStyle = '#FF7A2E'; gx.beginPath(); gx.arc(p.x,p.y,9,0,7); gx.fill();
-    gx.fillStyle = '#FFFFFF'; gx.beginPath(); gx.arc(p.x-3,p.y-2,2,0,7); gx.arc(p.x+3,p.y-2,2,0,7); gx.fill();
-  }
-}
-function aim(e){ if(!S) return; const r = g.getBoundingClientRect(); S.p.tx = e.clientX - r.left; S.p.ty = e.clientY - r.top; }
-g.addEventListener('pointermove', aim); g.addEventListener('pointerdown', aim);
-const KM = {w:'w',a:'a',s:'s',d:'d',arrowup:'w',arrowleft:'a',arrowdown:'s',arrowright:'d'};
-g.addEventListener('keydown', e => { const m = KM[e.key.toLowerCase()]; if(m && S){ S.keys[m] = true; e.preventDefault(); } });
-g.addEventListener('keyup', e => { const m = KM[e.key.toLowerCase()]; if(m && S) S.keys[m] = false; });
-g.addEventListener('blur', () => { if(S) S.keys = {}; });
-document.getElementById('gstart').addEventListener('click', () => { gsize(); reset(); over.hidden = true; run = true; g.focus({preventScroll:true}); requestAnimationFrame(step); });
-if('ResizeObserver' in window) new ResizeObserver(() => { gsize(); render(); }).observe(g); else addEventListener('resize', () => { gsize(); render(); });
-new IntersectionObserver(e => { gameOff = !e[0].isIntersecting; paused = gameOff || termOpen; }).observe(g);
-let gameOff = false, termOpen = false;
-document.addEventListener('visibilitychange', () => { if(document.hidden) S && (S.keys = {}); });
-gsize(); render();
-
 /* =================== EXTRAS INTERACTIVOS =================== */
 const $ = id => document.getElementById(id);
 const root = document.documentElement;
@@ -300,8 +215,14 @@ document.querySelectorAll('.spot').forEach(el => el.addEventListener('pointermov
 /* ---------- aparición al hacer scroll + contadores ---------- */
 if('IntersectionObserver' in window && !reduce){
   const targets = document.querySelectorAll('.head, .card, .job, .edu li, .sk, .lang, .about > div, .contact');
-  const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }), {rootMargin:'0px 0px -8% 0px'});
-  targets.forEach(el => { const r = el.getBoundingClientRect(); if(r.top > innerHeight){ el.classList.add('reveal'); io.observe(el); } });
+  // Solo se oculta lo que el observador confirma que está fuera de pantalla (también al entrar con #ancla).
+  const seen = new WeakSet();
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    const el = e.target, first = !seen.has(el); seen.add(el);
+    if(e.isIntersecting){ if(!first) el.classList.add('in'); io.unobserve(el); }
+    else if(first && e.boundingClientRect.top > 0) el.classList.add('reveal');
+  }), {rootMargin:'0px 0px -8% 0px'});
+  targets.forEach(el => io.observe(el));
 }
 const countIO = new IntersectionObserver(es => es.forEach(e => {
   if(!e.isIntersecting) return; countIO.unobserve(e.target);
@@ -367,7 +288,7 @@ function shinyRain(){
 const KONAMI = ['arrowup','arrowup','arrowdown','arrowdown','arrowleft','arrowright','arrowleft','arrowright','b','a'];
 let kp = 0;
 addEventListener('keydown', e => {
-  if(e.target.closest && e.target.closest('input, #game')) return;
+  if(e.target.closest && e.target.closest('input')) return;
   const k = e.key.toLowerCase(); kp = k === KONAMI[kp] ? kp + 1 : (k === 'arrowup' ? (kp === 2 ? 2 : 1) : 0);
   if(kp === KONAMI.length){ kp = 0; shinyRain(); }
 });
@@ -376,9 +297,8 @@ addEventListener('keydown', e => {
 const term = $('term'), tout = $('tout'), tin = $('tinput');
 const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const print = html => { const d = document.createElement('div'); d.innerHTML = html; tout.appendChild(d); tout.scrollTop = tout.scrollHeight; };
-const go = sel => { closeTerm(); setTimeout(() => document.querySelector(sel).scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'center'}), 120); };
 const CMDS = {
-  help: () => print('<span class="m">Comandos disponibles:</span>\n  <span class="c">whoami</span>       quién soy\n  <span class="c">proyectos</span>    lo que he construido\n  <span class="c">experiencia</span>  dónde he trabajado\n  <span class="c">skills</span>       tecnologías\n  <span class="c">idiomas</span>      lenguas que hablo\n  <span class="c">contacto</span>     cómo escribirme\n  <span class="c">github</span>       abrir mi GitHub\n  <span class="c">jugar</span>        ir a la minidemo\n  <span class="c">tema</span>         cambiar claro/oscuro\n  <span class="c">shiny</span>        ✨\n  <span class="c">clear</span>        limpiar\n  <span class="c">exit</span>         cerrar\n<span class="m">También puedes escribir una pregunta normal, como "¿sabe de bases de datos?"\nTab autocompleta y ↑ recupera comandos anteriores.</span>'),
+  help: () => print('<span class="m">Comandos disponibles:</span>\n  <span class="c">whoami</span>       quién soy\n  <span class="c">proyectos</span>    lo que he construido\n  <span class="c">experiencia</span>  dónde he trabajado\n  <span class="c">skills</span>       tecnologías\n  <span class="c">idiomas</span>      lenguas que hablo\n  <span class="c">contacto</span>     cómo escribirme\n  <span class="c">github</span>       abrir mi GitHub\n  <span class="c">jugar</span>        abrir PokéSurvivor\n  <span class="c">tema</span>         cambiar claro/oscuro\n  <span class="c">shiny</span>        ✨\n  <span class="c">clear</span>        limpiar\n  <span class="c">exit</span>         cerrar\n<span class="m">También puedes escribir una pregunta normal, como "¿sabe de bases de datos?"\nTab autocompleta y ↑ recupera comandos anteriores.</span>'),
   whoami: () => print('<span class="v">Jonathan Piera Torregrosa</span>\nTécnico superior en DAM · especializándome en IA\nXàtiva, València · disponible para trabajar'),
   proyectos: () => print('<span class="c">XatiChat</span>      asistente RAG para empresas (PHP, FastAPI, PostgreSQL + pgvector, WhatsApp)\n<span class="c">PokéSurvivor</span>  bullet-heaven en JS vanilla · <a href="https://jpter78.github.io/pokesurvivor/" target="_blank" rel="noopener">jugar</a>'),
   experiencia: () => print('<span class="m">2025</span>  Desarrollo web y BBDD · Universidad CRNE CORE (Montenegro)\n<span class="m">2023</span>  E-commerce Product Manager · Innovant\n<span class="m">2023</span>  Programador web · Erasmus Courses (Italia)'),
@@ -386,7 +306,7 @@ const CMDS = {
   idiomas: () => print('Castellano <span class="v">nativo</span> · Valenciano <span class="v">nativo</span> · Inglés <span class="v">B1+</span>'),
   contacto: () => print('email   <span class="v">jpieratorregrosa@gmail.com</span>\ngithub  <a href="https://github.com/JPTER78" target="_blank" rel="noopener">github.com/JPTER78</a>'),
   github: () => { print('Abriendo github.com/JPTER78…'); window.open('https://github.com/JPTER78', '_blank', 'noopener'); },
-  jugar: () => go('.stage'),
+  jugar: () => { print('Abriendo PokéSurvivor…'); window.open('https://jpter78.github.io/pokesurvivor/', '_blank', 'noopener'); },
   tema: () => { setTheme(isDark() ? 'light' : 'dark'); print('Tema cambiado a ' + (isDark() ? 'oscuro' : 'claro') + '.'); },
   shiny: () => { closeTerm(); shinyRain(); },
   clear: () => { tout.innerHTML = ''; },
@@ -400,11 +320,11 @@ CMDS.ayuda = CMDS.help; CMDS.contact = CMDS.contacto; CMDS.cls = CMDS.clear; CMD
 let hist = [], hi = 0, lastFocus = null;
 function openTerm(){
   lastFocus = document.activeElement; term.hidden = false;
-  document.querySelector('main').inert = true; document.querySelector('header').inert = true; termOpen = true; paused = true;
+  document.querySelector('main').inert = true; document.querySelector('header').inert = true;
   if(!tout.childElementCount) print('<span class="v">Bienvenido al portfolio de Jonathan.</span> Escribe <span class="c">help</span> para ver los comandos.');
   setTimeout(() => tin.focus(), 30);
 }
-function closeTerm(){ term.hidden = true; document.querySelector('main').inert = false; document.querySelector('header').inert = false; termOpen = false; paused = gameOff; if(lastFocus && lastFocus.focus) lastFocus.focus({preventScroll:true}); }
+function closeTerm(){ term.hidden = true; document.querySelector('main').inert = false; document.querySelector('header').inert = false; if(lastFocus && lastFocus.focus) lastFocus.focus({preventScroll:true}); }
 $('termbtn').addEventListener('click', openTerm); $('termbtn2').addEventListener('click', openTerm);
 $('tclose').addEventListener('click', closeTerm);
 term.addEventListener('click', e => { if(e.target === term) closeTerm(); });
