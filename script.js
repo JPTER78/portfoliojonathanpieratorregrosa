@@ -1,6 +1,9 @@
 (() => {
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+let C = {};
+const readColors = () => { C = {accent:css('--accent'), vec:css('--vec'), muted:css('--muted'), line:css('--line'), ink:css('--ink'), mono:css('--f-mono')}; };
+readColors();
 
 /* ---------- knowledge base (fragmentos del CV) ---------- */
 const KB = [
@@ -20,7 +23,7 @@ const KB = [
   {id:'contact', g:'edu', label:'contacto', link:'#contacto', k:['contacto','contactar','email','correo','mail','escribir','llamar','telefono','github','donde','vive','ubicacion','xativa','valencia','disponible','disponibilidad','incorporacion'], a:'Puedes escribirme a jpieratorregrosa@gmail.com. Vivo en Xàtiva (València) y estoy disponible para trabajar. Mi GitHub es github.com/JPTER78.'},
 ];
 const STOP = new Set('que de la el en y a los las un una tiene ha has con por para del al lo le se su sus es son me mi mis tu como cual cuales sobre sabe hace hecho algo alguna algun jonathan el ella esta este eso puede tu'.split(' '));
-const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 KB.forEach(c => c.kn = c.k.map(norm));
 function retrieve(q){
   const toks = norm(q).split(/[^a-z0-9+]+/).filter(t => t.length > 1 && !STOP.has(t));
@@ -48,11 +51,11 @@ const pts = KB.map((c,i) => { const [cx,cy] = centers[c.g]; const a = rnd()*Math
 const dust = Array.from({length:110}, () => { const keys = Object.keys(centers); const [cx,cy] = centers[keys[Math.floor(rnd()*3)]]; const a = rnd()*Math.PI*2, r = Math.pow(rnd(), .6)*.24; return {x:cx+Math.cos(a)*r*1.4, y:cy+Math.sin(a)*r, ph:rnd()*6, g:keys}; });
 let hits = [], qpt = null, qT = 0, W = 0, H = 0;
 function size(){ const r = cv.getBoundingClientRect(), d = devicePixelRatio || 1; W = r.width; H = r.height; cv.width = W*d; cv.height = H*d; ctx.setTransform(d,0,0,d,0,0); }
-function col(g){ return g === 'exp' ? css('--accent') : g === 'proj' ? css('--vec') : css('--muted'); }
+function col(g){ return g === 'exp' ? C.accent : g === 'proj' ? C.vec : C.muted; }
 function draw(t){
   if(!W) size();
   ctx.clearRect(0,0,W,H);
-  const wob = reduce ? 0 : 1, line = css('--line'), ink = css('--ink'), muted = css('--muted');
+  const wob = reduce ? 0 : 1, line = C.line, ink = C.ink, muted = C.muted, mono = C.mono;
   const P = p => [ (p.x + Math.sin(t/2400 + p.ph)*.006*wob) * W, (p.y + Math.cos(t/2800 + p.ph)*.008*wob) * H ];
   ctx.fillStyle = line;
   for(const d of dust){ const [x,y] = P(d); ctx.beginPath(); ctx.arc(x,y,1.6,0,7); ctx.fill(); }
@@ -62,13 +65,13 @@ function draw(t){
     const [qx,qy] = [qpt.x*W, qpt.y*H];
     hits.forEach((h,i) => {
       const p = pts.find(p => p.c === h.c); const [x,y] = P(p);
-      ctx.strokeStyle = i ? muted : css('--accent'); ctx.globalAlpha = i ? .55 : 1; ctx.lineWidth = i ? 1 : 2; ctx.setLineDash(i ? [4,4] : []);
+      ctx.strokeStyle = i ? muted : C.accent; ctx.globalAlpha = i ? .55 : 1; ctx.lineWidth = i ? 1 : 2; ctx.setLineDash(i ? [4,4] : []);
       ctx.beginPath(); ctx.moveTo(qx,qy); ctx.lineTo(qx + (x-qx)*k, qy + (y-qy)*k); ctx.stroke();
       ctx.setLineDash([]); ctx.globalAlpha = 1;
-      if(k === 1){ ctx.fillStyle = ink; ctx.font = '600 11px ' + css('--f-mono'); ctx.fillText(h.sim.toFixed(2), (qx+x)/2 + 6, (qy+y)/2 - 4); }
+      if(k === 1){ ctx.fillStyle = ink; ctx.font = '600 11px ' + mono; ctx.fillText(h.sim.toFixed(2), (qx+x)/2 + 6, (qy+y)/2 - 4); }
     });
     ctx.fillStyle = ink; ctx.beginPath(); ctx.arc(qx,qy,6,0,7); ctx.fill();
-    ctx.font = '600 11px ' + css('--f-mono'); ctx.fillText('tu pregunta', qx + 10, qy + 4);
+    ctx.font = '600 11px ' + mono; ctx.fillText('tu pregunta', qx + 10, qy + 4);
   }
   const placed = [];
   const ordered = [...pts].sort((a,b) => hitIds.includes(b.c.id) - hitIds.includes(a.c.id));
@@ -77,16 +80,16 @@ function draw(t){
     ctx.fillStyle = col(p.c.g);
     if(top){ ctx.globalAlpha = .18 + (reduce ? 0 : .08*Math.sin(t/300)); ctx.beginPath(); ctx.arc(x,y,18,0,7); ctx.fill(); ctx.globalAlpha = 1; }
     ctx.beginPath(); ctx.arc(x,y,on ? 6 : 4.5,0,7); ctx.fill();
-    ctx.fillStyle = on ? ink : muted; ctx.font = (on ? '600 ' : '400 ') + '11px ' + css('--f-mono');
-    const tw = ctx.measureText(p.c.label).width, lx = Math.min(Math.max(4, x - tw/2), W - tw - 4);
-    const spot = [y - 10, y + 20, y - 24, y + 34].find(ly => !placed.some(r => lx < r.x + r.w + 4 && lx + tw + 4 > r.x && Math.abs(ly - r.y) < 13));
-    if(spot !== undefined){ placed.push({x:lx, y:spot, w:tw}); ctx.fillText(p.c.label, lx, spot); }
+    ctx.fillStyle = on ? ink : muted; ctx.font = (on ? '600 ' : '400 ') + '11px ' + mono;
+    const tw = ctx.measureText(p.c.label).width, bx = p.x * W, by = p.y * H, lx = Math.min(Math.max(4, bx - tw/2), W - tw - 4);
+    const off = [-10, 20, -24, 34].find(o => !placed.some(r => lx < r.x + r.w + 4 && lx + tw + 4 > r.x && Math.abs(by + o - r.y) < 13));
+    if(off !== undefined){ placed.push({x:lx, y:by + off, w:tw}); ctx.fillText(p.c.label, Math.min(Math.max(4, x - tw/2), W - tw - 4), y + off); }
   }
 }
 let fieldVisible = true;
 new IntersectionObserver(e => { fieldVisible = e[0].isIntersecting; }).observe(cv);
 function loop(t){ if(fieldVisible) draw(t); requestAnimationFrame(loop); }
-addEventListener('resize', () => { size(); });
+if('ResizeObserver' in window) new ResizeObserver(() => size()).observe(cv); else addEventListener('resize', size);
 size(); requestAnimationFrame(loop);
 
 /* ---------- chat ---------- */
@@ -142,7 +145,7 @@ const cb = document.getElementById('copymail');
 cb.addEventListener('click', () => {
   const mail = document.getElementById('mail').textContent;
   const ok = () => { cb.textContent = 'Copiado'; setTimeout(() => cb.textContent = 'Copiar', 1800); };
-  const fallback = () => { const r = document.createRange(); r.selectNodeContents(document.getElementById('mail')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); cb.textContent = 'Seleccionado, pulsa Ctrl+C'; };
+  const fallback = () => { const r = document.createRange(); r.selectNodeContents(document.getElementById('mail')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); cb.textContent = 'Seleccionado, cópialo'; setTimeout(() => cb.textContent = 'Copiar', 2500); };
   try { navigator.clipboard.writeText(mail).then(ok, fallback); } catch(e){ fallback(); }
 });
 
@@ -160,8 +163,10 @@ function spawn(){
   const shiny = Math.random() < 1/40;
   S.en.push({x, y, r: shiny ? 9 : 7 + Math.random()*4, v: (40 + Math.random()*30 + S.t*1.6) * (shiny ? 1.4 : 1), c: shiny ? '#FFFFFF' : ENC[Math.floor(Math.random()*4)], hp: shiny ? 3 : 1, shiny});
 }
+let paused = false;
 function step(now){
   if(!run) return;
+  if(paused){ S.last = 0; requestAnimationFrame(step); return; }
   const dt = Math.min(.05, (now - (S.last || now))/1000); S.last = now; S.t += dt;
   const p = S.p, k = S.keys, sp = 190;
   if(k.w||k.a||k.s||k.d){ p.tx = p.x + ((k.d?1:0)-(k.a?1:0))*sp*dt*4; p.ty = p.y + ((k.s?1:0)-(k.w?1:0))*sp*dt*4; }
@@ -221,8 +226,12 @@ g.addEventListener('pointermove', aim); g.addEventListener('pointerdown', aim);
 const KM = {w:'w',a:'a',s:'s',d:'d',arrowup:'w',arrowleft:'a',arrowdown:'s',arrowright:'d'};
 g.addEventListener('keydown', e => { const m = KM[e.key.toLowerCase()]; if(m && S){ S.keys[m] = true; e.preventDefault(); } });
 g.addEventListener('keyup', e => { const m = KM[e.key.toLowerCase()]; if(m && S) S.keys[m] = false; });
+g.addEventListener('blur', () => { if(S) S.keys = {}; });
 document.getElementById('gstart').addEventListener('click', () => { gsize(); reset(); over.hidden = true; run = true; g.focus({preventScroll:true}); requestAnimationFrame(step); });
-addEventListener('resize', () => { gsize(); if(!run) render(); });
+if('ResizeObserver' in window) new ResizeObserver(() => { gsize(); render(); }).observe(g); else addEventListener('resize', () => { gsize(); render(); });
+new IntersectionObserver(e => { gameOff = !e[0].isIntersecting; paused = gameOff || termOpen; }).observe(g);
+let gameOff = false, termOpen = false;
+document.addEventListener('visibilitychange', () => { if(document.hidden) S && (S.keys = {}); });
 gsize(); render();
 
 /* =================== EXTRAS INTERACTIVOS =================== */
@@ -236,6 +245,8 @@ function setTheme(t){ root.dataset.theme = t; $('themeicon').textContent = t ===
 try { const st = localStorage.getItem('jpt-theme'); if(st) setTheme(st); } catch(e){}
 $('themeicon').textContent = isDark() ? '☀' : '☾';
 $('themebtn').addEventListener('click', () => setTheme(isDark() ? 'light' : 'dark'));
+sysDark.addEventListener('change', () => { if(!root.dataset.theme) $('themeicon').textContent = isDark() ? '☀' : '☾'; readColors(); });
+new MutationObserver(readColors).observe(root, {attributes:true, attributeFilter:['data-theme']});
 
 /* ---------- barra de progreso ---------- */
 const prog = $('progress');
@@ -248,9 +259,11 @@ function scramble(el){
   if(reduce) return;
   const final = el.dataset.final || (el.dataset.final = el.textContent);
   let f = 0; clearInterval(el._t);
+  el.style.height = el.offsetHeight + 'px'; el.style.overflow = 'hidden';
+  const done = () => { clearInterval(el._t); el.textContent = final; el.style.height = el.style.overflow = ''; };
   el._t = setInterval(() => {
     el.textContent = final.split('').map((ch, i) => ch === ' ' ? ' ' : i < f / 2 ? ch : GLYPHS[Math.floor(Math.random() * GLYPHS.length)]).join('');
-    if(++f / 2 > final.length){ clearInterval(el._t); el.textContent = final; }
+    if(++f / 2 > final.length) done();
   }, 28);
 }
 document.querySelectorAll('[data-scramble]').forEach((el, i) => { setTimeout(() => scramble(el), 150 + i * 250); el.addEventListener('mouseenter', () => scramble(el)); });
@@ -260,14 +273,14 @@ const WORDS = ['webs', 'bases de datos', 'asistentes con IA', 'videojuegos', 'ch
 let wi = 0; const rot = $('rot');
 function nextWord(){
   const w = WORDS[wi = (wi + 1) % WORDS.length];
-  if(reduce){ rot.textContent = w; return; }
+  if(reduce){ rot.textContent = w; setTimeout(nextWord, 2600); return; }
   let cur = rot.textContent;
   const del = setInterval(() => {
     cur = cur.slice(0, -1); rot.textContent = cur;
-    if(!cur){ clearInterval(del); let i = 0; const add = setInterval(() => { rot.textContent = w.slice(0, ++i); if(i >= w.length) clearInterval(add); }, 55); }
+    if(!cur){ clearInterval(del); let i = 0; const add = setInterval(() => { rot.textContent = w.slice(0, ++i); if(i >= w.length){ clearInterval(add); setTimeout(nextWord, 1900); } }, 55); }
   }, 30);
 }
-setInterval(nextWord, 2600);
+setTimeout(nextWord, 2600);
 
 /* ---------- foto 3D y botones magnéticos ---------- */
 const fine = matchMedia('(pointer:fine)').matches;
@@ -318,7 +331,7 @@ $('simbtn').addEventListener('click', async () => {
   nodes.forEach(n => n.classList.remove('lit'));
   $('simchat').hidden = false; $('sima').hidden = true; $('simq').textContent = sim.q;
   const via = Math.random() < .5 ? '0' : '0w';
-  for(const step of [via, '1', '2', '3', '4']){
+  for(const step of via === '0' ? ['0', '1', '2', '3', '4'] : ['0w', '1w', '2', '3', '4']){
     nodes.filter(n => n.dataset.step === step).forEach(n => n.classList.add('lit'));
     await wait(520);
   }
@@ -334,18 +347,20 @@ $('simbtn').addEventListener('click', async () => {
 let toastT;
 function toast(msg){ const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 3600); }
 const fx = $('fx'), fctx = fx.getContext('2d');
+let raining = false;
 function shinyRain(){
+  if(raining) return;
   const msg = '✨ ¡Ha aparecido un Jonathan shiny! Probabilidad 1/4096. Contrátalo antes de que huya.';
   if(reduce){ toast(msg); return; }
   const d = devicePixelRatio || 1; fx.width = innerWidth * d; fx.height = innerHeight * d; fctx.setTransform(d, 0, 0, d, 0, 0);
   const cols = ['#FFD166', '#FF7A2E', '#4CCBC2', '#FFFFFF', '#C77DFF'];
   const ps = Array.from({length:160}, () => ({x:Math.random() * innerWidth, y:-20 - Math.random() * innerHeight, v:120 + Math.random() * 220, s:4 + Math.random() * 8, r:Math.random() * 6, vr:(Math.random() - .5) * 6, c:cols[Math.floor(Math.random() * cols.length)]}));
-  let last = performance.now(); const t0 = last;
+  raining = true; let last = performance.now(); const t0 = last;
   const star = s => { fctx.beginPath(); for(let i = 0; i < 8; i++){ const a = i * Math.PI / 4, rr = i % 2 ? s * .4 : s; fctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } fctx.closePath(); fctx.fill(); };
   (function f(now){
     const dt = (now - last) / 1000; last = now; fctx.clearRect(0, 0, innerWidth, innerHeight);
     for(const p of ps){ p.y += p.v * dt; p.r += p.vr * dt; fctx.save(); fctx.translate(p.x, p.y); fctx.rotate(p.r); fctx.fillStyle = p.c; star(p.s); fctx.restore(); }
-    if(now - t0 < 4500) requestAnimationFrame(f); else fctx.clearRect(0, 0, innerWidth, innerHeight);
+    if(now - t0 < 4500) requestAnimationFrame(f); else { fctx.clearRect(0, 0, innerWidth, innerHeight); raining = false; }
   })(last);
   toast(msg);
 }
@@ -353,7 +368,7 @@ const KONAMI = ['arrowup','arrowup','arrowdown','arrowdown','arrowleft','arrowri
 let kp = 0;
 addEventListener('keydown', e => {
   if(e.target.closest && e.target.closest('input, #game')) return;
-  const k = e.key.toLowerCase(); kp = k === KONAMI[kp] ? kp + 1 : (k === KONAMI[0] ? 1 : 0);
+  const k = e.key.toLowerCase(); kp = k === KONAMI[kp] ? kp + 1 : (k === 'arrowup' ? (kp === 2 ? 2 : 1) : 0);
   if(kp === KONAMI.length){ kp = 0; shinyRain(); }
 });
 
@@ -385,10 +400,11 @@ CMDS.ayuda = CMDS.help; CMDS.contact = CMDS.contacto; CMDS.cls = CMDS.clear; CMD
 let hist = [], hi = 0, lastFocus = null;
 function openTerm(){
   lastFocus = document.activeElement; term.hidden = false;
+  document.querySelector('main').inert = true; document.querySelector('header').inert = true; termOpen = true; paused = true;
   if(!tout.childElementCount) print('<span class="v">Bienvenido al portfolio de Jonathan.</span> Escribe <span class="c">help</span> para ver los comandos.');
   setTimeout(() => tin.focus(), 30);
 }
-function closeTerm(){ term.hidden = true; if(lastFocus && lastFocus.focus) lastFocus.focus({preventScroll:true}); }
+function closeTerm(){ term.hidden = true; document.querySelector('main').inert = false; document.querySelector('header').inert = false; termOpen = false; paused = gameOff; if(lastFocus && lastFocus.focus) lastFocus.focus({preventScroll:true}); }
 $('termbtn').addEventListener('click', openTerm); $('termbtn2').addEventListener('click', openTerm);
 $('tclose').addEventListener('click', closeTerm);
 term.addEventListener('click', e => { if(e.target === term) closeTerm(); });

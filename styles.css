@@ -22,6 +22,7 @@
 img{max-width:100%}
 body{margin:0}
 html{scroll-behavior:smooth}
+section[id],#contacto{scroll-margin-top:72px}
 @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
 body{background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--f-body);-webkit-font-smoothing:antialiased}
 a{color:inherit}
@@ -32,7 +33,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.0
 .mono{font-family:var(--f-mono)}
 
 /* top bar */
-.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px}
 .mark{font:800 15px/1 var(--f-display);letter-spacing:.02em;text-decoration:none;display:flex;align-items:center;gap:10px}
 .mark i{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 25%,transparent)}
@@ -251,8 +252,8 @@ footer{padding-block:32px 48px;color:var(--muted);font:400 12px/1.6 var(--f-mono
 
 /* marquee */
 .marquee{margin-top:clamp(56px,9vw,104px);overflow:hidden;border-block:1px solid var(--line);padding-block:16px;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
-.mtrack{display:flex;gap:40px;width:max-content;animation:slide 40s linear infinite;font:700 clamp(18px,2.6vw,28px)/1 var(--f-display);letter-spacing:-.01em;color:var(--muted)}
-.mtrack span{display:flex;align-items:center;gap:40px;white-space:nowrap}
+.mtrack{display:flex;gap:0;width:max-content;animation:slide 40s linear infinite;font:700 clamp(18px,2.6vw,28px)/1 var(--f-display);letter-spacing:-.01em;color:var(--muted)}
+.mtrack span{display:flex;align-items:center;gap:40px;padding-right:40px;white-space:nowrap}
 .mtrack span::after{content:"✦";color:var(--accent);font-size:.7em}
 .marquee:hover .mtrack{animation-play-state:paused}
 .mtrack span:hover{color:var(--ink)}
