@@ -213,7 +213,7 @@ if(fine && !reduce){
 document.querySelectorAll('.spot').forEach(el => el.addEventListener('pointermove', e => { const r = el.getBoundingClientRect(); el.style.setProperty('--mx', e.clientX - r.left + 'px'); el.style.setProperty('--my', e.clientY - r.top + 'px'); }));
 
 /* ---------- aparición al hacer scroll + contadores ---------- */
-if('IntersectionObserver' in window && !reduce){
+if('IntersectionObserver' in window && !reduce && !location.hash){
   const targets = document.querySelectorAll('.head, .card, .job, .edu li, .sk, .lang, .about > div, .contact');
   // Solo se oculta lo que el observador confirma que está fuera de pantalla (también al entrar con #ancla).
   const seen = new WeakSet();
