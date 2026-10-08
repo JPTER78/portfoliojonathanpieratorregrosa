@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jonathan Piera Torregrosa</title>
+  <meta name="description" content="Portfolio de Jonathan Piera Torregrosa, desarrollador de aplicaciones multiplataforma especializándose en IA.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <a class="mark" href="#top"><i></i>JPT</a>
+    <nav aria-label="Secciones">
+      <a href="#proyectos">Proyectos</a>
+      <a href="#trayectoria" class="opt">Trayectoria</a>
+      <a href="#habilidades" class="opt">Habilidades</a>
+      <a href="#contacto">Contacto</a>
+      <button class="iconbtn" id="termbtn" type="button" aria-label="Abrir terminal" title="Terminal (pulsa /)"><span class="mono">&gt;_</span></button>
+      <button class="iconbtn" id="themebtn" type="button" aria-label="Cambiar tema" title="Cambiar tema"><span id="themeicon">◐</span></button>
+    </nav>
+  </div>
+  <div class="progress" id="progress"></div>
+</header>
+
+<main class="wrap" id="top">
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <span class="status"><b></b>Disponible para trabajar · Xàtiva, València</span>
+        <h1 class="name" aria-label="Jonathan Piera Torregrosa"><span data-scramble>Jonathan</span><span class="last" data-scramble>Piera Torregrosa</span></h1>
+        <p class="lede">Técnico superior en <strong>Desarrollo de Aplicaciones Multiplataforma</strong>, especializándome en <strong>IA y aprendizaje automático</strong>. </p>
+        <p class="rotator" aria-live="off">Hago <span id="rot">webs</span><i class="caret"></i></p>
+        <div class="heroactions">
+          <a class="btn magnet" href="#proyectos">Ver proyectos</a>
+          <a class="btn ghost magnet" href="#contacto">Contactar</a>
+          <button class="btn ghost" type="button" id="termbtn2"><span class="mono">&gt;_</span> Abrir terminal</button>
+        </div>
+      </div>
+      <figure class="photo tilt" style="margin:0">
+        <img src="img/jonathan.jpg" alt="Foto de Jonathan Piera Torregrosa" width="320" height="400">
+        <figcaption>DAM + IA<small>Garantía Juvenil</small></figcaption>
+      </figure>
+    </div>
+
+    <div class="ask" id="preguntar">
+      <div class="field" aria-hidden="true">
+        <canvas id="field"></canvas>
+        <span class="eyebrow tag">Mi CV como vectores</span>
+        <div class="legend">
+          <span><i style="background:var(--accent)"></i>experiencia</span>
+          <span><i style="background:var(--vec)"></i>proyectos</span>
+          <span><i style="background:var(--muted)"></i>formación y perfil</span>
+        </div>
+      </div>
+      <div class="chat">
+        <div>
+          <p class="eyebrow" style="margin:0 0 10px">RAG en miniatura</p>
+          <h2>Pregúntale a mi CV</h2>
+        </div>
+        <p class="hint">Escribe una pregunta. La página busca el fragmento de mi CV que más se parece y te enseña la fuente, igual que XatiChat, el asistente que construí. Funciona en tu navegador, sin enviar nada.</p>
+        <form class="q" id="qform" autocomplete="off">
+          
+          <input id="qinput" name="q" aria-label="Tu pregunta" placeholder="¿Tiene experiencia con bases de datos?" maxlength="140">
+          <button class="btn" type="submit">Preguntar</button>
+        </form>
+        <div class="chips" id="chips"></div>
+        <div class="answer" id="answer" aria-live="polite">
+          <span class="who">Respuesta</span>
+          <p class="text" id="atext"></p>
+          <div class="sources" id="asrc"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="proyectos">
+    <div class="head">
+      <h2>Proyectos</h2>
+      <p>Dos cosas que he construido de principio a fin: un asistente con IA para empresas y un videojuego completo. Las dos tarjetas se pueden probar.</p>
+    </div>
+    <div class="proj">
+      <article class="card spot">
+        <div class="meta">
+          <div class="kicker"><span class="pill hot">IA · RAG</span><span class="pill">Para empresas</span><span class="pill">Código privado</span></div>
+          <h3>XatiChat</h3>
+          <p>Asistente virtual con <strong>Retrieval-Augmented Generation</strong>. Responde a clientes y empleados usando solo la documentación interna de cada empresa: manuales, PDFs y conversaciones. Si algo no está en sus bases de conocimiento, no lo inventa.</p>
+          <ul class="feat">
+            <li>Chat web y bot de WhatsApp con las mismas capacidades</li>
+            <li>Subida de PDFs y vectorización automática en PostgreSQL + pgvector</li>
+            <li>Roles y permisos (RBAC): cada usuario consulta solo las bases a las que tiene acceso</li>
+            <li>Panel de administración, panel de supervisión, texto a voz y sugerencia de tickets de soporte</li>
+          </ul>
+          <div class="stack"><span>PHP</span><span>Python</span><span>FastAPI</span><span>PostgreSQL</span><span>pgvector</span><span>Embeddings</span><span>WhatsApp API</span><span>TTS</span><span>JavaScript</span></div>
+        </div>
+        <div class="pipe" aria-label="Flujo de una consulta">
+          <div class="pipehead"><span class="eyebrow">Flujo de una consulta</span><button class="btn small" type="button" id="simbtn">▶ Simular consulta</button></div>
+          <div class="simchat" id="simchat" hidden>
+            <div class="bub user" id="simq"></div>
+            <div class="bub bot" id="sima" hidden></div>
+          </div>
+          <div class="row">
+            <div class="node" data-step="0"><b>Entrada</b>Chat web</div>
+            <div class="node" data-step="0w"><b>Entrada</b>WhatsApp</div>
+            <div class="node"><b>Entrada</b>Panel admin</div>
+          </div>
+          <div class="arrow">petición</div>
+          <div class="row">
+            <div class="node" data-step="1"><b>API</b>REST en PHP</div>
+            <div class="node"><b>Webhook</b>FastAPI</div>
+            <div class="node" data-step="2"><b>Auth</b>Roles RBAC</div>
+          </div>
+          <div class="arrow">embedding de la pregunta</div>
+          <div class="node core" data-step="3"><b>Búsqueda vectorial</b>PostgreSQL + pgvector sobre documentos, PDFs y conversaciones</div>
+          <div class="arrow">fragmentos relevantes + prompt</div>
+          <div class="node out" data-step="4"><b>Respuesta</b>El modelo responde citando solo lo encontrado, en texto o voz</div>
+        </div>
+      </article>
+
+      <article class="card spot">
+        <div class="meta">
+          <div class="kicker"><span class="pill hot">Videojuego</span><span class="pill ok">Público en GitHub</span><span class="pill">Fan game sin ánimo de lucro</span></div>
+          <h3>PokéSurvivor</h3>
+          <p>Un <strong>bullet-heaven roguelike</strong> al estilo de Survivor.io con sprites de Pokémon Mundo Misterioso. Hecho en <strong>JavaScript vanilla sobre Canvas 2D</strong>, sin build ni dependencias, y con música y efectos compuestos para el juego.</p>
+          <div class="stats">
+            <div class="stat"><strong data-count="966">966</strong><span>Pokémon jugables</span></div>
+            <div class="stat"><strong data-count="9">9</strong><span>generaciones</span></div>
+            <div class="stat"><strong>1/4096</strong><span>prob. de shiny</span></div>
+            <div class="stat"><strong data-count="0">0</strong><span>dependencias</span></div>
+          </div>
+          <ul class="feat">
+            <li>Tabla de tipos, climas que cambian la partida y jefes legendarios en arenas aparte</li>
+            <li>Gacha con tickets, misiones diarias y semanales, logros y perfil</li>
+            <li>Enemigos con comportamiento propio: curan, ponen escudos o llaman a su manada</li>
+          </ul>
+          <div style="display:grid;gap:8px">
+            <span class="eyebrow">Código del repositorio</span>
+            <div class="langbar" id="langbar"></div>
+            <div class="langkey" id="langkey"></div>
+          </div>
+          <div class="actions">
+            <a class="btn" href="https://jpter78.github.io/pokesurvivor/" target="_blank" rel="noopener">Jugar al juego completo ↗</a>
+            <a class="btn ghost" href="https://github.com/JPTER78/pokesurvivor" target="_blank" rel="noopener">Ver código ↗</a>
+          </div>
+        </div>
+        <div class="gamebox">
+          <span class="eyebrow">Minidemo jugable</span>
+          <div class="stage">
+            <canvas id="game" tabindex="0" aria-label="Minijuego: muévete con el ratón, el dedo o WASD"></canvas>
+            <div class="overlay" id="gover">
+              <button class="btn" id="gstart" type="button">Probar la demo</button>
+              <p>Muévete con el ratón, el dedo o WASD.<br>Disparas solo. Aguanta todo lo que puedas.</p>
+            </div>
+          </div>
+          <div class="hud"><span id="hscore">Puntos 0</span><span id="hbest">Récord 0</span><span id="hhp">Vida ♥♥♥</span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <div class="marquee" aria-hidden="true"><div class="mtrack" id="mtrack"></div></div>
+
+  <section class="block" id="trayectoria">
+    <div class="head">
+      <h2>Trayectoria</h2>
+      <p>Experiencia en Italia, Montenegro y España. Pulsa un puesto para ver qué hice.</p>
+    </div>
+    <div class="traj">
+      <div>
+        <h3>Experiencia</h3>
+        <ul class="jobs" id="jobs">
+          <li class="job" data-open="false">
+            <div class="when">Mar 2025<small>3 meses</small></div>
+            <div>
+              <h4>Responsable de Desarrollo Web y Gestión de Base de Datos</h4>
+              <div class="org">Universidad CRNE CORE · Montenegro</div>
+              <p class="more" hidden>Diseñé, programé e implementé la base de datos central de la universidad. También optimicé y actualicé su web institucional.</p>
+              <span class="toggle">+ ver detalle</span>
+            </div>
+          </li>
+          <li class="job" data-open="false">
+            <div class="when">Abr 2023<small>2 meses</small></div>
+            <div>
+              <h4>E-commerce Product Manager</h4>
+              <div class="org">Innovant</div>
+              <p class="more" hidden>Gestioné y publiqué productos en marketplaces como Amazon: descripciones, imágenes y categorización optimizadas para vender más.</p>
+              <span class="toggle">+ ver detalle</span>
+            </div>
+          </li>
+          <li class="job" data-open="false">
+            <div class="when">Mar 2023<small>1 mes</small></div>
+            <div>
+              <h4>Programador Web · Erasmus Courses</h4>
+              <div class="org">Erasmus · Italia</div>
+              <p class="more" hidden>Desarrollo y mantenimiento de la web del programa Erasmus en Italia: nuevas funcionalidades, corrección de errores y mejoras de rendimiento y experiencia de usuario.</p>
+              <span class="toggle">+ ver detalle</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h3>Formación</h3>
+        <ol class="edu">
+          <li><b>Educación Secundaria Obligatoria</b><span>IES Dr. Lluís Simarro Lacabra, Xàtiva</span></li>
+          <li><b>CFGM Sistemas Microinformáticos y Redes (SMX)</b><span>IES Dr. Lluís Simarro Lacabra</span></li>
+          <li><b>CFGS Desarrollo de Aplicaciones Multiplataforma (DAM)</b><span>IES Dr. Lluís Simarro Lacabra</span></li>
+          <li class="now"><b>Curso de especialización en IA y aprendizaje automático</b><span>Aprendizaje automático y entrenamiento de modelos</span><br><span class="pill hot">En curso</span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="habilidades">
+    <div class="head">
+      <h2>Habilidades</h2>
+      <p>Lo que uso en mis proyectos y lo que he aprendido trabajando.</p>
+    </div>
+    <div class="skills">
+      <div class="sk"><h3>Desarrollo</h3><ul>
+        <li>JavaScript, HTML y CSS<small>Webs y juegos en Canvas 2D sin frameworks</small></li>
+        <li>Python<small>APIs con FastAPI y scripts de datos</small></li>
+        <li>PHP<small>APIs REST y paneles de administración</small></li>
+        <li>Aplicaciones multiplataforma<small>Formación DAM</small></li>
+      </ul></div>
+      <div class="sk"><h3>IA y datos</h3><ul>
+        <li>RAG y embeddings<small>Búsqueda semántica con fuentes</small></li>
+        <li>PostgreSQL + pgvector<small>Diseño de bases de datos y vectorización</small></li>
+        <li>Procesado de PDFs<small>Extracción y troceado para IA</small></li>
+        <li>Aprendizaje automático<small>Especialización en curso</small></li>
+      </ul></div>
+      <div class="sk"><h3>Sistemas</h3><ul>
+        <li>Redes y microinformática<small>Formación SMX</small></li>
+        <li>Resolución de incidencias<small>Hardware y software</small></li>
+        <li>Software de administración<small>Nivel avanzado</small></li>
+        <li>Paquetes ofimáticos<small>Manejo completo</small></li>
+      </ul></div>
+      <div class="sk"><h3>Negocio y contenido</h3><ul>
+        <li>Marketplaces y e-commerce<small>Publicación y optimización en Amazon</small></li>
+        <li>Redes sociales<small>Gestión integral</small></li>
+        <li>Edición multimedia y diseño<small>Software de diseño avanzado</small></li>
+        <li>YouTube y streaming<small>Creador de contenido</small></li>
+      </ul></div>
+    </div>
+    <div class="langs" aria-label="Idiomas">
+      <div class="lang"><div>Castellano <span>Nativo</span></div><div class="meter" data-level="6"></div></div>
+      <div class="lang"><div>Valenciano <span>Nativo</span></div><div class="meter" data-level="6"></div></div>
+      <div class="lang"><div>Inglés <span>B1+ · Erasmus</span></div><div class="meter" data-level="3"></div><div class="meter-scale"><span>A1</span><span>A2</span><span>B1</span><span>B2</span><span>C1</span><span>C2</span></div></div>
+    </div>
+  </section>
+
+  <section class="block" id="sobre-mi">
+    <div class="head"><h2>Sobre mí</h2></div>
+    <div class="about">
+      <div>
+        <p>Soy una persona proactiva, organizada y responsable, con metas claras. Trabajo bien en equipo, tomo decisiones rápido y rindo bajo presión.</p>
+        <p>Me adapto a entornos nuevos: he trabajado en Italia y en Montenegro. Me gusta resolver problemas de forma eficiente y llevar los proyectos hasta el final, del diseño de la base de datos a la última animación.</p>
+      </div>
+      <div>
+        <div class="traits"><span>Proactivo</span><span>Organizado</span><span>Trabajo en equipo</span><span>Decisiones rápidas</span><span>Trabajo bajo presión</span><span>Adaptable</span><span>Resolutivo</span></div>
+        <div class="note"><b>Garantía Juvenil.</b> Soy beneficiario del Sistema Nacional de Garantía Juvenil, así que mi contratación puede acogerse a sus ayudas.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contacto">
+    <h2>¿Hablamos? <em>Escríbeme.</em></h2>
+    <div class="lines">
+      <div class="cline"><span class="lbl">Email</span><span class="val" id="mail">jpieratorregrosa@gmail.com</span><button class="copy" type="button" id="copymail">Copiar</button></div>
+      <div class="cline"><span class="lbl">GitHub</span><a class="val" href="https://github.com/JPTER78" target="_blank" rel="noopener">github.com/JPTER78</a></div>
+      <div class="cline"><span class="lbl">Ciudad</span><span class="val">Xàtiva, València</span></div>
+    </div>
+  </section>
+
+  <footer><span>Jonathan Piera Torregrosa · 2026 · Hecho a mano con HTML, CSS y JavaScript</span><span>Pulsa <kbd>/</kbd> para abrir la terminal · ↑↑↓↓←→←→BA</span></footer>
+</main>
+
+<div class="term" id="term" hidden>
+  <div class="tbox" role="dialog" aria-modal="true" aria-label="Terminal">
+    <div class="tbar"><i></i><i></i><i></i><span>jonathan@portfolio: ~</span><button type="button" id="tclose" aria-label="Cerrar terminal">✕</button></div>
+    <div class="tout" id="tout"></div>
+    <form class="tin" id="tform" autocomplete="off"><label for="tinput">$</label><input id="tinput" spellcheck="false" aria-label="Comando"></form>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<script src="script.js"></script>
+</body>
+</html>
