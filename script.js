@@ -132,7 +132,7 @@ LANGS.forEach(([n,b,c]) => {
 });
 
 /* ---------- meters ---------- */
-document.querySelectorAll('.meter').forEach(m => { const n = +m.dataset.level; for(let i = 0; i < 6; i++){ const e = document.createElement('i'); if(i < n) e.className = 'on'; m.appendChild(e); } });
+document.querySelectorAll('.meter').forEach(m => { const n = +m.dataset.level; for(let i = 0; i < 6; i++){ const e = document.createElement('i'); if(i + 1 <= n) e.className = 'on'; else if(i < n) e.className = 'half'; m.appendChild(e); } });
 
 /* ---------- jobs accordion ---------- */
 document.querySelectorAll('.job').forEach(j => {
